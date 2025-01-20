@@ -5,12 +5,12 @@ import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/image/profile_icon.png";
 
 export default function Home() {
-    const URL = import.meta.env.VITE_BACKEND_URL;
     const [menfes, setMenfes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const { isLoggedIn } = useContext(LoggedinCtx);
     const navigate = useNavigate();
+    const URL = import.meta.env.VITE_BACKEND_URL;
 
     const getMenfes = async () => {
         try {
@@ -68,7 +68,7 @@ export default function Home() {
                                         {/* Profile Picture */}
                                         {item.profile_picture ? (
                                             <img
-                                                src={`${URL}${item.profile_picture}`}
+                                                src={item.profile_picture}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                             />

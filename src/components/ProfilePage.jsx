@@ -34,6 +34,7 @@ const Profile = () => {
         });
         
         setProfile(response.data);
+        console.log(response.data)
         setFormData({
           username: response.data.username,
           email: response.data.email,
@@ -181,7 +182,7 @@ const Profile = () => {
 
   return (
     <>
-      <div className="verify-container h-screen w-full bg-pink-200 transition-opacity duration-200 invisible flex fixed inset-0 items-center justify-center text-center">
+      <div className="verify-container h-screen w-full transition-opacity duration-200 invisible flex fixed inset-0 items-center justify-center text-center">
         <div className="pointer-events-auto flex flex-col gap-4 items-center justify-center text-center inset-0 h-80 w-5/12 rounded-lg bg-pink-200">
           <p
             onClick={() => setVerifyDelete(!verifyDelete)}

@@ -60,12 +60,21 @@ const Navbar = () => {
               <>
                 {location.pathname === '/login' || location.pathname === '/register' ? navigate('/') : null}
                 <li className="relative">
-                  <img
-                    src={profile.profile_picture || profileIcon}
-                    alt="Profile"
-                    className="rounded-full w-8 h-8 object-cover cursor-pointer border-2 border-pink-300 hover:border-pink-100"
-                    onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
-                  />
+                  {profile.profile_picture ? (
+                    <img
+                      src={profile.profile_picture}
+                      alt="Profile"
+                      className="rounded-full w-8 h-8 object-cover cursor-pointer border-2 border-pink-300 hover:border-pink-100"
+                      onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    />
+                  ) : (
+                    <img
+                      src={profileIcon}
+                      alt="Profile"
+                      className="rounded-full w-8 h-8 object-cover cursor-pointer border-2 border-pink-300 hover:border-pink-100"
+                      onClick={() => setIsProfileMenuOpen(!isProfileMenuOpen)}
+                    />
+                  )}
                   {isProfileMenuOpen && (
                     <div
                       className="absolute right-0 mt-2 bg-pink-600 border-2 border-pink-400 p-1 text-white rounded-md shadow-lg"
