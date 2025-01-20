@@ -2,6 +2,7 @@ import axios from "axios";
 import { useContext, useEffect, useState } from "react";
 import { LoggedinCtx } from "../App";
 import { useNavigate } from "react-router-dom";
+import profileIcon from "../assets/image/profile_icon.png";
 
 export default function Home() {
     const URL = import.meta.env.VITE_BACKEND_URL;
@@ -65,11 +66,19 @@ export default function Home() {
                                         className="bg-white p-4 items-start shadow-md rounded-lg flex space-x-4 hover:shadow-lg"
                                     >
                                         {/* Profile Picture */}
-                                        <img
-                                            src={`${URL}${item.profile_picture}`}
-                                            alt="Profile"
-                                            className="w-10 h-10 object-cover rounded-full border border-pink-300"
-                                        />
+                                        {item.profile_picture ? (
+                                            <img
+                                                src={`${URL}${item.profile_picture}`}
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full border border-pink-300"
+                                            />
+                                        ) : (
+                                            <img
+                                                src={profileIcon}
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full border border-pink-300"
+                                            />
+                                        )}
                                         {/* Message Content */}
                                         <div>
                                             <h3 className="text-pink-700 font-semibold">{item.username}</h3>
