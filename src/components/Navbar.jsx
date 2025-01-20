@@ -47,8 +47,8 @@ const Navbar = () => {
     <nav className={`bg-pink-500 p-4 text-white ${path.includes(location.pathname) ? 'absolute top-0 left-0 right-0' : ''}`}>
       <ul className="flex items-center justify-between">
         <li>
-          <Link to="/" className="hover:underline hover:text-pink-200">
-            Home
+          <Link to="/" className="">
+            <h1 className="text-2xl font-bold text-pink-300">Menfes</h1>
           </Link>
         </li>
         {location.pathname === '/login' || location.pathname === '/register' ? (

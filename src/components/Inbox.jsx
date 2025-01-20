@@ -79,7 +79,7 @@ export default function Inbox() {
             } else {
                 alert(result.error || 'Failed to send menfes!');
             }
-            setSuccess(result.message);
+            setSuccess("Reply sent!");
           console.log(result)
         } catch (err) {
           console.error(err);
@@ -109,11 +109,11 @@ export default function Inbox() {
                     ) : menfesList.length === 0 ? (
                         <p className="text-center mt-4 text-pink-500">No messages!</p>
                     ) : (
-                        <ul className="p-2 space-y-2">
+                        <ul className="p-2 space-y-2 flex flex-wrap-reverse">
                             {menfesList.map((message, index) => (
                                 <li
                                     key={index}
-                                    className={`p-3 cursor-pointer rounded-md transition hover:bg-pink-100 ${
+                                    className={`p-3 w-full cursor-pointer rounded-md transition hover:bg-pink-100 ${
                                         selectedMessage === message
                                             ? "bg-pink-200 text-pink-900"
                                             : ""
