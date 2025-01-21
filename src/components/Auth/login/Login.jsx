@@ -26,7 +26,7 @@ const Login = () => {
         location.reload();
       })
       .catch(err => {
-        // setError(err.response.data.message || "Failed to logging in");
+        setError(err.response.data.message || "Failed to logging in");
         console.error('Login error: ', err.response);
       });
   };

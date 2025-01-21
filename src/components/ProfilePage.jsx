@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import profileIcon from '../assets/image/profile_icon.png';
+import adminRoleIcon from '../assets/icon/admin_role_icon.png';
+import ownerRoleIcon from '../assets/icon/owner_role_icon.png';
 
 const Profile = () => {
   const [profile, setProfile] = useState(null);
@@ -268,6 +270,10 @@ const Profile = () => {
               className="w-32 h-32 rounded-full object-cover mx-auto border-2 border-pink-300"
             />
           )}
+          <div className="flex justify-center items-center gap-1">
+          <span className={`${profile.role == 'owner' ? 'text-red-500' : profile.role == 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{profile.role}</span>
+              <span>{profile.role == 'owner' ? <img className="w-4" src={ownerRoleIcon}/> : profile.role == 'admin' ? <img className="w-3" src={adminRoleIcon}/> : ''}</span>
+          </div>
         </div>
 
         {editMode && (

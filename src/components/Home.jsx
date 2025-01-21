@@ -4,7 +4,8 @@ import { LoggedinCtx } from "../App";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/image/profile_icon.png";
 import adminRoleIcon from '../assets/icon/admin_role_icon.png';
-import ownerRoleIcon from '../assets/icon/owner_role_icon.png'
+import ownerRoleIcon from '../assets/icon/owner_role_icon.png';
+import '../App.css';
 
 export default function Home() {
     const [menfes, setMenfes] = useState([]);
@@ -52,7 +53,7 @@ export default function Home() {
             </aside>
 
             {/* Main Content */}
-            <main className="flex-1 p-6 overflow-y-auto">
+            <main className="custom-scrollbar flex-1 p-6 overflow-y-auto">
                 <h1 className="text-3xl font-bold text-pink-600 mb-6">Menfes...</h1>
                 {isLoggedIn ? (
                     <>
