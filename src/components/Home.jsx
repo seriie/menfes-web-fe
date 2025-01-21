@@ -3,6 +3,8 @@ import { useContext, useEffect, useState } from "react";
 import { LoggedinCtx } from "../App";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/image/profile_icon.png";
+import adminRoleIcon from '../assets/icon/admin_role_icon.png';
+import ownerRoleIcon from '../assets/icon/owner_role_icon.png'
 
 export default function Home() {
     const [menfes, setMenfes] = useState([]);
@@ -81,7 +83,13 @@ export default function Home() {
                                         )}
                                         {/* Message Content */}
                                         <div>
-                                            <h3 className="text-pink-700 font-semibold">{item.username}</h3>
+                                            <div className="flex gap-1">
+                                                <h3 className="text-pink-700 font-semibold">{item.username} |</h3>
+                                                <div className="flex items-center gap-1">
+                                                    <span className={`${item.role == 'owner' ? 'text-red-500' : item.role == 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
+                                                    <span>{item.role == 'owner' ? <img className="w-4" src={ownerRoleIcon}/> : item.role == 'admin' ? <img className="w-3" src={adminRoleIcon}/> : ''}</span>
+                                                </div>
+                                            </div>
                                             <p className="text-gray-800">{item.message}</p>
                                         </div>
                                     </div>

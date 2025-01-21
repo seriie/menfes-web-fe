@@ -27,6 +27,7 @@ const App = () => {
     <LoggedinCtx.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       <Router basename="/">
         {validPaths.includes(location.pathname) && <Navbar />}
+        {!validPaths.includes(location.pathname) && <PageNotFound />}
           <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -34,7 +35,6 @@ const App = () => {
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/create-menfes" element={<CreateMenfes />} />
           <Route path="/inbox" element={<Inbox />} />
-          <Route path="*" element={<PageNotFound />} />
         </Routes>
       </Router>
     </LoggedinCtx.Provider>
