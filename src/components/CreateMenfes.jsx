@@ -6,9 +6,12 @@ const CreateMenfes = () => {
   const [targetUsername, setTargetUsername] = useState('');
   const [alert, setAlert] = useState("");
   const [success, setSuccess] = useState(false);
+  const [isSending, setIsSending] = useState(false);
   const URL = `${import.meta.env.VITE_BACKEND_URL}menfes/`;
 
   const handleSubmit = async () => {
+    setIsSending(true);
+
     try {
       const response = await fetch(`${URL}`, {
         method: 'POST',
@@ -44,6 +47,8 @@ const CreateMenfes = () => {
       console.error(err);
       setAlert('An error occurred');
       setSuccess(false);
+    } finally {
+      setIsSending(false);
     }
   };
 
@@ -98,7 +103,7 @@ const CreateMenfes = () => {
         onClick={handleSubmit}
         className="w-full bg-pink-500 text-white py-3 rounded-md font-semibold hover:bg-pink-600 transition"
       >
-        Send Menfes
+        {isSending ? 'Sending...' : 'Send menfess'}
       </button>
     </div>
   );

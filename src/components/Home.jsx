@@ -19,6 +19,7 @@ export default function Home() {
         try {
             const response = await axios.get(`${URL}menfes/public`);
             setMenfes(response.data);
+            console.log(response.data);
             setLoading(false);
         } catch (e) {
             setError(e.response?.data || "Error fetching data");
@@ -71,7 +72,7 @@ export default function Home() {
                                         {/* Profile Picture */}
                                         {item.profile_picture ? (
                                             <img
-                                                src={item.profile_picture}
+                                                src={URL + item.profile_picture}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                             />
