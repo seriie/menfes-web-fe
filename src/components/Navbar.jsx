@@ -35,6 +35,7 @@ const Navbar = () => {
     if (isLoggedIn) {
       handleFetchProfile();
     }
+    console.log(isLoggedIn);
   }, [isLoggedIn]);
 
   const path = ['/login', '/register'];

@@ -102,7 +102,7 @@ export default function Home() {
                                         </span>
 
                                         {/* Dropdown */}
-                                        {selectedMessage === index && (
+                                        {/* {selectedMessage === index && (
                                             <div className="absolute z-10 right-3 top-10 bg-white border shadow-md rounded-md p-2">
                                                 {isAdmin ? (
                                                     <>
@@ -113,7 +113,7 @@ export default function Home() {
                                                     <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
                                                 )}
                                             </div>
-                                        )}
+                                        )} */}
                                     </div>
                                 ))}
                             </div>

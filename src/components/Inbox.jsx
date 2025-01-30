@@ -209,8 +209,10 @@ export default function Inbox() {
                                             Reply →
                                         </button>
                                     </div>
-                                    <div className="bg-pink-50 p-4 rounded-md shadow-sm">
-                                        <p className="text-pink-800">{selectedMessage.message}</p>
+                                    <div className="bg-pink-50 p-4 max-h-fit rounded-md shadow-sm">
+                                        <p className="text-pink-800 break-words">
+                                            {selectedMessage.message}
+                                        </p>
                                     </div>
                                 </div>
                             )}
