@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useContext, useEffect, useState } from "react";
-import { LoggedinCtx } from "../App";
+import { IsAdminCtx, LoggedinCtx } from "../App";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/image/profile_icon.png";
 import adminRoleIcon from '../assets/icon/admin_role_icon.png';
@@ -11,7 +11,9 @@ export default function Home() {
     const [menfes, setMenfes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [selectedMessage, setSelectedMessage] = useState(null);
     const { isLoggedIn } = useContext(LoggedinCtx);
+    const { isAdmin } = useContext(IsAdminCtx);
     const navigate = useNavigate();
     const URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -19,7 +21,6 @@ export default function Home() {
         try {
             const response = await axios.get(`${URL}menfes/public`);
             setMenfes(response.data);
-            console.log(response.data);
             setLoading(false);
         } catch (e) {
             setError(e.response?.data || "Error fetching data");
@@ -29,6 +30,10 @@ export default function Home() {
     useEffect(() => {
         getMenfes();
     }, []);
+
+    const toggleDropdown = (index) => {
+        setSelectedMessage(selectedMessage === index ? null : index);
+    };
 
     return (
         <div className="flex flex-col lg:flex-row h-screen bg-gray-50">
@@ -40,17 +45,6 @@ export default function Home() {
                 >
                     Create your menfes
                 </button>
-                {/* <nav className="mt-6 space-y-4">
-                    <a href="#" className="block text-pink-800 font-semibold hover:text-pink-500">
-                        Home
-                    </a>
-                    <a href="#" className="block text-pink-800 font-semibold hover:text-pink-500">
-                        Public Menfes
-                    </a>
-                    <a href="#" className="block text-pink-800 font-semibold hover:text-pink-500">
-                        My Messages
-                    </a>
-                </nav> */}
             </aside>
 
             {/* Main Content */}
@@ -67,44 +61,65 @@ export default function Home() {
                                 {menfes.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="bg-white p-4 items-start shadow-md rounded-lg flex space-x-4 hover:shadow-lg"
+                                        className="bg-white p-4 relative shadow-md rounded-lg flex justify-between space-x-4 hover:shadow-lg"
                                     >
                                         {/* Profile Picture */}
-                                        {item.profile_picture ? (
-                                            <img
-                                                src={URL + item.profile_picture}
-                                                alt="Profile"
-                                                className="w-10 h-10 object-cover rounded-full border border-pink-300"
-                                            />
-                                        ) : (
-                                            <img
-                                                src={profileIcon}
-                                                alt="Profile"
-                                                className="w-10 h-10 object-cover rounded-full border border-pink-300"
-                                            />
-                                        )}
-                                        {/* Message Content */}
-                                        <div>
-                                            <div className="flex gap-1">
-                                                <h3 className="text-pink-700 font-semibold">{item.username} |</h3>
-                                                <div className="flex items-center gap-1">
-                                                    <span className={`${item.role == 'owner' ? 'text-red-500' : item.role == 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
-                                                    <span>{item.role == 'owner' ? <img className="w-4" src={ownerRoleIcon}/> : item.role == 'admin' ? <img className="w-3" src={adminRoleIcon}/> : ''}</span>
+                                        <div className="flex space-x-4">
+                                            {item.profile_picture ? (
+                                                <img
+                                                    src={item.profile_picture}
+                                                    alt="Profile"
+                                                    className="w-10 h-10 object-cover rounded-full border border-pink-300"
+                                                />
+                                            ) : (
+                                                <img
+                                                    src={profileIcon}
+                                                    alt="Profile"
+                                                    className="w-10 h-10 object-cover rounded-full border border-pink-300"
+                                                />
+                                            )}
+                                            {/* Message Content */}
+                                            <div className="">
+                                                <div className="flex gap-1">
+                                                    <h3 className="text-pink-700 font-semibold">{item.username} |</h3>
+                                                    <div className="flex items-center gap-1">
+                                                        <span className={`${item.role == 'owner' ? 'text-red-500' : item.role == 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
+                                                        <span>{item.role == 'owner' ? <img className="w-4" src={ownerRoleIcon}/> : item.role == 'admin' ? <img className="w-3" src={adminRoleIcon}/> : ''}</span>
+                                                    </div>
                                                 </div>
+                                                <p className="text-gray-800 break-all">{item.message}</p>
                                             </div>
-                                            <p className="text-gray-800">{item.message}</p>
                                         </div>
+                                        {/* Dropdown Toggle */}
+                                        <span 
+                                            className="text-xl cursor-pointer"
+                                            onClick={() => toggleDropdown(index)}
+                                        >
+                                            &#9868;
+                                        </span>
+
+                                        {/* Dropdown */}
+                                        {selectedMessage === index && (
+                                            <div className="absolute z-10 right-3 top-10 bg-white border shadow-md rounded-md p-2">
+                                                {isAdmin ? (
+                                                    <>
+                                                        <button className="block w-full text-left p-2 hover:bg-gray-100">Delete</button>
+                                                        <button className="block w-full text-left p-2 hover:bg-gray-100">Pin</button>
+                                                    </>
+                                                ) : (
+                                                    <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
+                                                )}
+                                            </div>
+                                        )}
                                     </div>
                                 ))}
                             </div>
                         )}
                     </>
                 ) : (
-                    <>
-                        <div className="flex items-center justify-center h-full">
-                            <p className="text-slate-400 text-3xl font-medium">You {"aren't"} signed in</p>
-                        </div>
-                    </>
+                    <div className="flex items-center justify-center h-full">
+                        <p className="text-slate-400 text-3xl font-medium">You {"aren't"} signed in</p>
+                    </div>
                 )}
             </main>
         </div>
