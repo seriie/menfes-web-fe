@@ -66,11 +66,14 @@ export default function Home() {
                                         {/* Profile Picture */}
                                         <div className="flex space-x-4">
                                             {item.profile_picture ? (
+                                                <>
+                                                {console.log(item.profile_picture)}
                                                 <img
                                                     src={item.profile_picture}
                                                     alt="Profile"
                                                     className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                                 />
+                                                </>
                                             ) : (
                                                 <img
                                                     src={profileIcon}
