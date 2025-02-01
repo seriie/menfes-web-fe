@@ -97,12 +97,13 @@ export default function Home() {
                                             />
                                             
                                             <div>
-                                                <div className="flex gap-1">
+                                                <div className="flex gap-1 items-center">
                                                     <h3 className="text-pink-700 font-semibold">{item.username} |</h3>
                                                     <div className="flex items-center gap-1">
                                                         <span className={`${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
                                                         {item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : ''}
                                                     </div>
+                                                    <i className="text-slate-400 text-sm">| {new Date(item.created_at).toLocaleString("id-ID", {dateStyle: "medium", timeStyle: "short"})}</i>
                                                 </div>
                                                 <p className="text-gray-800 break-all">{item.message}</p>
                                             </div>
