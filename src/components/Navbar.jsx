@@ -49,7 +49,9 @@ const Navbar = () => {
       <ul className="flex items-center justify-between">
         <li>
           <Link to="/" className="">
-            <h1 className="text-2xl font-bold text-pink-300">Menfes</h1>
+            <h1 onClick={() => setTimeout(() => {
+              location.reload()
+            }, 100)} className="text-2xl font-bold text-pink-300">Menfes</h1>
           </Link>
         </li>
         {location.pathname === '/login' || location.pathname === '/register' ? (
@@ -78,7 +80,7 @@ const Navbar = () => {
                   )}
                   {isProfileMenuOpen && (
                     <div
-                      className="absolute right-0 mt-2 bg-pink-600 border-2 border-pink-400 p-1 text-white rounded-md shadow-lg"
+                      className="absolute z-50 right-0 mt-2 bg-pink-600 border-2 border-pink-400 p-1 text-white rounded-md shadow-lg"
                       onMouseLeave={() => setIsProfileMenuOpen(false)}
                       onClick={onClickRefresh}
                     >
