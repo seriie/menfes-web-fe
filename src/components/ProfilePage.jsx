@@ -24,30 +24,30 @@ const Profile = () => {
   
   const URL = `${import.meta.env.VITE_BACKEND_URL}profile/`;
   
-  useEffect(() => {
-    const fetchProfile = async () => {
-      try {
-        const token = localStorage.getItem("token");
+  const fetchProfile = async () => {
+    try {
+      const token = localStorage.getItem("token");
 
-        const response = await axios.get(URL, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        
-        setProfile(response.data);
-        console.log(response.data)
-        setFormData({
-          username: response.data.username,
-          email: response.data.email,
-          fullname: response.data.fullname,
-          birth_day: response.data.birth_day,
-        });
-        setPreview(response.data.profile_picture);
-      } catch (err) {
-        console.log(err.response?.data?.message);
-      }
-    };
+      const response = await axios.get(URL, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      
+      setProfile(response.data);
+      console.log(response.data)
+      setFormData({
+        username: response.data.username,
+        email: response.data.email,
+        fullname: response.data.fullname,
+        birth_day: response.data.birth_day,
+      });
+      setPreview(response.data.profile_picture);
+    } catch (err) {
+      console.log(err.response?.data?.message);
+    }
+  };
+  useEffect(() => {
     
     fetchProfile();
     // handleConfirmDropdown();
@@ -185,7 +185,7 @@ const Profile = () => {
   return (
     <>
       <div className="verify-container h-screen w-full transition-opacity duration-200 invisible flex fixed inset-0 items-center justify-center text-center">
-        <div className="pointer-events-auto flex flex-col gap-4 items-center justify-center text-center inset-0 h-80 w-5/12 rounded-lg bg-pink-200">
+        <div className="pointer-events-auto flex flex-col gap-4 items-center justify-center text-center inset-0 h-80 xl:w-5/12 md:w-1/2 px-4 rounded-lg bg-pink-200">
           <p
             onClick={() => setVerifyDelete(!verifyDelete)}
             className="top-5 cursor-pointer text-3xl px-8 py-6 rounded-full text-pink-800 bg-pink-200 font-bold absolute"
