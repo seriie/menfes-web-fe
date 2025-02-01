@@ -21,7 +21,6 @@ export default function Home() {
         try {
             const response = await axios.get(`${URL}menfes/public`);
             setMenfes(response.data);
-            console.log(response.data)
             setLoading(false);
         } catch (e) {
             setError(e.response?.data || "Error fetching data");
@@ -32,7 +31,6 @@ export default function Home() {
         getMenfes();
     }, []);
 
-    // Toggle Dropdown
     const toggleDropdown = (index) => {
         setSelectedMessage(selectedMessage === index ? null : index);
     };
