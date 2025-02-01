@@ -17,6 +17,12 @@ const Login = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    const emailField = document.querySelector('input[type="email"]');
+    const passwordField = document.querySelector('input[type="password"]');
+    if (emailField.value === '' || passwordField.value === '') {
+      return setError('Please fill in all fields');
+    }
+
     axios.post(`${URL}auth/login`, form)
       .then(response => {
         localStorage.setItem('token', response.data.token);
@@ -26,7 +32,7 @@ const Login = () => {
         location.reload();
       })
       .catch(err => {
-        setError(err.response.data.message || "Failed to logging in");
+        setError(err?.response?.data?.message ? err?.response?.data?.message : "Failed to logging i");
         console.error('Login error: ', err.response);
       });
   };
