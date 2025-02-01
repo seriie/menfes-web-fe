@@ -21,27 +21,53 @@ export default function Home() {
         try {
             const response = await axios.get(`${URL}menfes/public`);
             setMenfes(response.data);
+            console.log(response.data)
             setLoading(false);
         } catch (e) {
             setError(e.response?.data || "Error fetching data");
         }
-    };
+    };    
 
     useEffect(() => {
         getMenfes();
     }, []);
 
+    // Toggle Dropdown
     const toggleDropdown = (index) => {
         setSelectedMessage(selectedMessage === index ? null : index);
     };
 
+    const handleDeleteMessage = async (id) => {
+        setSelectedMessage(null);
+        try {
+            await axios.delete(`${URL}menfes/${id}`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            getMenfes();
+        } catch (error) {
+            console.error("Delete error:", error.response?.data || error.message);
+        }
+    };
+
+    const handlePinMessage = async (id) => {
+        try {
+            await axios.patch(`${URL}menfes/${id}/pin`);
+            getMenfes();
+        } catch (error) {
+            console.error("Pin error:", error.response?.data || error.message);
+        }
+    };    
+
+    const displayedMessages = [...menfes].sort((a, b) => b.pinned - a.pinned);
+
     return (
         <div className="flex flex-col lg:flex-row h-screen bg-gray-50">
-            {/* Sidebar */}
             <aside className="lg:w-1/4 bg-pink-200 p-4 lg:h-full shadow-lg">
                 <button
-                 className="text-slate-200 text-xl font-medium rounded-md bg-pink-600 p-4"
-                 onClick={() => isLoggedIn ? navigate('/create-menfes') : navigate('/login')}
+                    className="text-slate-200 text-xl font-medium rounded-md bg-pink-600 p-4"
+                    onClick={() => isLoggedIn ? navigate('/create-menfes') : navigate('/login')}
                 >
                     Create your menfes
                 </button>
@@ -58,42 +84,32 @@ export default function Home() {
                             <p className="text-center text-red-500">{error}</p>
                         ) : (
                             <div className="space-y-4">
-                                {menfes.map((item, index) => (
+                                {displayedMessages.map((item, index) => (
                                     <div
                                         key={index}
-                                        className="bg-white p-4 relative shadow-md rounded-lg flex justify-between space-x-4 hover:shadow-lg"
+                                        className={`bg-white p-4 relative shadow-md rounded-lg flex justify-between space-x-4 hover:shadow-lg 
+                                        ${item.pinned == 1 ? 'border-2 bg-gradient-to-r from-white to-yellow-200 border-yellow-500' : ''}`}
                                     >
-                                        {/* Profile Picture */}
+                                        {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
                                         <div className="flex space-x-4">
-                                            {item.profile_picture ? (
-                                                <>
-                                                {console.log(item.profile_picture)}
-                                                <img
-                                                    src={item.profile_picture}
-                                                    alt="Profile"
-                                                    className="w-10 h-10 object-cover rounded-full border border-pink-300"
-                                                />
-                                                </>
-                                            ) : (
-                                                <img
-                                                    src={profileIcon}
-                                                    alt="Profile"
-                                                    className="w-10 h-10 object-cover rounded-full border border-pink-300"
-                                                />
-                                            )}
-                                            {/* Message Content */}
-                                            <div className="">
+                                            <img
+                                                src={item.profile_picture ? item.profile_picture : profileIcon}
+                                                alt="Profile"
+                                                className="w-10 h-10 object-cover rounded-full border border-pink-300"
+                                            />
+                                            
+                                            <div>
                                                 <div className="flex gap-1">
                                                     <h3 className="text-pink-700 font-semibold">{item.username} |</h3>
                                                     <div className="flex items-center gap-1">
-                                                        <span className={`${item.role == 'owner' ? 'text-red-500' : item.role == 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
-                                                        <span>{item.role == 'owner' ? <img className="w-4" src={ownerRoleIcon}/> : item.role == 'admin' ? <img className="w-3" src={adminRoleIcon}/> : ''}</span>
+                                                        <span className={`${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
+                                                        {item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : ''}
                                                     </div>
                                                 </div>
                                                 <p className="text-gray-800 break-all">{item.message}</p>
                                             </div>
                                         </div>
-                                        {/* Dropdown Toggle */}
+
                                         <span 
                                             className="text-xl cursor-pointer"
                                             onClick={() => toggleDropdown(index)}
@@ -102,18 +118,28 @@ export default function Home() {
                                         </span>
 
                                         {/* Dropdown */}
-                                        {/* {selectedMessage === index && (
-                                            <div className="absolute z-10 right-3 top-10 bg-white border shadow-md rounded-md p-2">
+                                        {selectedMessage === index && (
+                                            <div className="absolute z-10 right-3 top-10 bg-white border shadow-md rounded-md p-1">
                                                 {isAdmin ? (
-                                                    <>
-                                                        <button className="block w-full text-left p-2 hover:bg-gray-100">Delete</button>
-                                                        <button className="block w-full text-left p-2 hover:bg-gray-100">Pin</button>
-                                                    </>
+                                                    <div onClick={() => setSelectedMessage(!selectedMessage)}>
+                                                        <div className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
+                                                            <button onClick={() => handleDeleteMessage(item.id)} className="text-red-500 block">Delete</button>
+                                                            <i className="fas fa-trash text-red-500"></i>
+                                                        </div>
+                                                        
+                                                        <div onClick={() => handlePinMessage(item.id)} className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
+                                                            <button className="text-sky-500 block">
+                                                                {item.pinned ? "Unpin" : "Pin"}
+                                                            </button>
+                                                            <i className={`fa-solid fa-thumbtack ${item.pinned ? 'text-gray-500' : 'text-sky-500'}`}></i>
+                                                        </div>
+
+                                                    </div>
                                                 ) : (
                                                     <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
                                                 )}
                                             </div>
-                                        )} */}
+                                        )}
                                     </div>
                                 ))}
                             </div>
