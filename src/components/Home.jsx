@@ -144,8 +144,8 @@ export default function Home() {
                     </>
                 ) : (
                     <div className="flex items-center justify-center h-full flex-col">
-                        <p className="text-slate-400 text-3xl font-medium">A world of secrets awaits...</p>
-                        <p className="text-slate-400 text-3xl font-medium">
+                        <p className="text-slate-400 text-center text-xl sm:text-2xl md:text-3xl font-medium">A world of secrets awaits...</p>
+                        <p className="text-slate-400 text-center text-xl sm:text-2xl md:text-3xl font-medium">
                             Log in to uncover (<span className="text-red-500">{menfes.length}</span>) hidden menfes.
                         </p>
                     </div>
