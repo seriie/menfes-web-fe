@@ -16,7 +16,7 @@ export const IsAdminCtx = createContext();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [data, setData] = useState([]);
+  const [role, setRole] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
 
   const fetchUrl = async () => {
@@ -27,9 +27,8 @@ const App = () => {
         }
       });
       
-      setData(response.data);
-      response.data.role === 'admin' || response.data.role === 'owner' ? setIsAdmin(true) : setIsAdmin(false);
-
+      setRole(response.data.role);
+      
     } catch (e) {
       console.error(e.response);
     }
@@ -39,10 +38,10 @@ const App = () => {
     const token = localStorage.getItem("token");
     if (token) {
       setIsLoggedIn(true);
+      fetchUrl();
     }
-    fetchUrl();
-    console.log(isAdmin);
-  }, [isAdmin]);
+    role === 'admin' || role === 'owner' ? setIsAdmin(true) : setIsAdmin(false);
+  }, [isAdmin, role]);
 
   const validPaths = ['/', '/login', '/register', '/profile', '/create-menfes', '/inbox'];
 
