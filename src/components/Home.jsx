@@ -85,7 +85,7 @@ export default function Home() {
                                 {displayedMessages.map((item, index) => (
                                     <div
                                         key={index}
-                                        className={`bg-white p-4 relative shadow-md rounded-lg flex justify-between space-x-4 hover:shadow-lg 
+                                        className={`bg-white p-4 relative shadow-md items-center rounded-lg flex justify-between space-x-4 hover:shadow-lg 
                                         ${item.pinned == 1 ? 'border-2 bg-gradient-to-r from-white to-yellow-200 border-yellow-500' : ''}`}
                                     >
                                         {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
@@ -98,17 +98,16 @@ export default function Home() {
                                             
                                             <div>
                                                 <div className="flex gap-1 items-center">
-                                                    <h3 className="text-pink-700 font-semibold">{item.username} |</h3>
+                                                    <h3 className="text-pink-700 text-xs sm:text-sm md:text-base font-semibold">{item.username} |</h3>
                                                     <div className="flex items-center gap-1">
-                                                        <span className={`${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
+                                                        <span className={`text-xs sm:text-sm md:text-base ${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
                                                         {item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : ''}
                                                     </div>
-                                                    <i className="text-slate-400 text-sm">| {new Date(item.created_at).toLocaleString("id-ID", {dateStyle: "medium", timeStyle: "short"})}</i>
+                                                    <i className="text-slate-400 text-xs sm:text-sm md:text-base">| {new Date(item.created_at).toLocaleString("id-ID", {dateStyle: "short", timeStyle: "short"})}</i>
                                                 </div>
-                                                <p className="text-gray-800 break-all">{item.message}</p>
+                                                <p className="text-gray-800 text-sm md:text-base break-all">{item.message}</p>
                                             </div>
                                         </div>
-
                                         <span 
                                             className="text-xl cursor-pointer"
                                             onClick={() => toggleDropdown(index)}
@@ -116,13 +115,12 @@ export default function Home() {
                                             &#9868;
                                         </span>
 
-                                        {/* Dropdown */}
                                         {selectedMessage === index && (
                                             <div className="absolute z-10 right-3 top-10 bg-white border shadow-md rounded-md p-1">
                                                 {isAdmin ? (
                                                     <div onClick={() => setSelectedMessage(!selectedMessage)}>
-                                                        <div className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
-                                                            <button onClick={() => handleDeleteMessage(item.id)} className="text-red-500 block">Delete</button>
+                                                        <div onClick={() => handleDeleteMessage(item.id)} className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
+                                                            <button className="text-red-500 block">Delete</button>
                                                             <i className="fas fa-trash text-red-500"></i>
                                                         </div>
                                                         

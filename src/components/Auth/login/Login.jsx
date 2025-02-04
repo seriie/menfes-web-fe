@@ -32,7 +32,7 @@ const Login = () => {
         location.reload();
       })
       .catch(err => {
-        setError(err?.response?.data?.message ? err?.response?.data?.message : "Failed to logging i");
+        setError(err?.response?.data?.message ? err?.response?.data?.message : "Failed to logging in");
         console.error('Login error: ', err.response);
       });
   };
