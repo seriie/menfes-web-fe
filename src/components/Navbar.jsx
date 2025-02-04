@@ -19,6 +19,13 @@ const Navbar = () => {
       });
       const data = await response.json();
       setProfile(data);
+      console.log(data)
+
+      if (response.status == 403) {
+        setIsLoggedIn(false);
+        localStorage.removeItem('token');
+        alert(data.message);
+      }
     } catch (e) {
       console.error("Error fetching profile:", e.message);
     }
@@ -27,7 +34,6 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate("/login");
     location.reload();
   };
 
@@ -35,7 +41,7 @@ const Navbar = () => {
     if (isLoggedIn) {
       handleFetchProfile();
     }
-  }, [isLoggedIn]);
+  }, [isLoggedIn, profile]);
 
   const path = ['/login', '/register'];
 
