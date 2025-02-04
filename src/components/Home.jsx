@@ -116,7 +116,7 @@ export default function Home() {
                                         </span>
 
                                         {selectedMessage === index && (
-                                            <div className="absolute z-10 right-3 top-10 bg-white border shadow-md rounded-md p-1">
+                                            <div className="absolute z-10 right-3 top-14 bg-white border shadow-md rounded-md p-1">
                                                 {isAdmin ? (
                                                     <div onClick={() => setSelectedMessage(!selectedMessage)}>
                                                         <div onClick={() => handleDeleteMessage(item.id)} className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
