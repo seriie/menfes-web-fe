@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import profileIcon from "../assets/image/profile_icon.png";
 
 export default function Profile() {
   const { username } = useParams();
@@ -43,7 +44,7 @@ export default function Profile() {
       <h1 className="text-3xl font-bold text-pink-600 mb-6">{profile.username}'s Profile</h1>
       <div className="bg-white p-6 rounded-lg shadow-md border-2 border-pink-200 w-80 text-center">
         <img
-          src={profile.profile_picture ? `${URL}${profile.profile_picture}` : "https://via.placeholder.com/100"}
+          src={profile.profile_picture ? profile.profile_picture : profileIcon}
           alt={profile.username}
           className={`w-24 h-24 rounded-full object-cover mx-auto border-4 ${
             profile.role === "owner"
