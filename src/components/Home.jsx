@@ -138,7 +138,7 @@ export default function Home() {
                                         {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
                                         <div className="flex space-x-4">
                                             <img
-                                                src={item.profile_picture ? URL + item.profile_picture : profileIcon}
+                                                src={item.profile_picture ? item.profile_picture : profileIcon}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                             />
