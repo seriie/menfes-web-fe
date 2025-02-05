@@ -19,6 +19,7 @@ export default function Profile() {
         `${URL}profile/profiles/${username}?KEY=${import.meta.env.VITE_MENFES_API_KEY}`);
     
     setProfile(response.data);
+    console.log(response)
   } catch (e) {
     console.error("Error fetching profile:", e.response?.data || e.message);
   }
