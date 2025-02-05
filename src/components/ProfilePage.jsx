@@ -8,7 +8,6 @@ import ownerRoleIcon from '../assets/icon/owner_role_icon.png';
 const Profile = () => {
   const [profile, setProfile] = useState(null);
   const [selectedFile, setSelectedFile] = useState(null);
-  const [preview, setPreview] = useState(null);
   const [uploadMessage, setUploadMessage] = useState("");
   const [success, setSuccess] = useState(false);
   const [editMode, setEditMode] = useState(false);
@@ -42,7 +41,6 @@ const Profile = () => {
         fullname: response.data.fullname,
         birth_day: response.data.birth_day,
       });
-      setPreview(response.data.profile_picture);
     } catch (err) {
       console.log(err.response?.data?.message);
     }
@@ -74,21 +72,13 @@ const Profile = () => {
     }
     console.log(verifyDelete)
   }, [confirmDelete, verifyDelete]);
-
-  useEffect(() => {
-    return () => {
-      if (preview) URL.revokeObjectURL(preview);
-    };
-  }, [preview]);
   
-
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     
     if (!file) return;
     
     setSelectedFile(file);
-    setPreview(URL.createObjectURL(file));
   };
 
   const handleInputChange = (e) => {
@@ -144,6 +134,7 @@ const Profile = () => {
           document.querySelector('.upload_message').classList.remove('top-3');
         }, 2000);
         setSuccess(true);
+        fetchProfile();
       }
     } catch (err) {
       setUploadMessage(err.response?.data?.message || "Failed to update profile!");
