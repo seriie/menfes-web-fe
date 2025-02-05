@@ -127,6 +127,7 @@ export default function Home() {
                                 {displayedMessages.map((item, index) => (
                                     <div
                                         key={index}
+                                        onDoubleClick={() => handleLikeMenfes(item.id)}
                                         className={`bg-white p-4 relative shadow-md items-center rounded-lg flex justify-between space-x-4 hover:shadow-lg 
                                         ${item.pinned == 1 ? 'border-2 bg-gradient-to-r from-white to-yellow-200 border-yellow-500' : ''}`}
                                     >
@@ -151,9 +152,9 @@ export default function Home() {
                                             </div>
                                         </div>
                                         <div className="flex items-center">
-                                            <div onClick={() => handleLikeMenfes(item.id)} className="flex cursor-pointer gap-1 items-center w-full text-left p-2 hover:bg-gray-100">
+                                            <div className="flex gap-1 items-center w-full text-left mx-2">
                                                 <button className="flex items-center gap-2 text-gray-600">
-                                                    <i className={`fa-solid fa-heart ${isLiked[item.id] ? 'text-red-500' : ''}`}></i>
+                                                    <i onClick={() => handleLikeMenfes(item.id)} className={`cursor-pointer fa-solid fa-heart ${isLiked[item.id] ? 'text-red-500' : ''}`}></i>
                                                 </button>
                                                 <span className="text-gray-600">{item.total_likes}</span>
                                             </div>
