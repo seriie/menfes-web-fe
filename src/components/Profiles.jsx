@@ -43,17 +43,35 @@ export default function Profile() {
     <div className="min-h-screen bg-pink-50 p-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-pink-600 mb-6">{profile.username}'s Profile</h1>
       <div className="bg-white p-6 rounded-lg shadow-md border-2 border-pink-200 w-80 text-center">
-        <img
-          src={profile.profile_picture}
-          alt={profile.username}
-          className={`w-24 h-24 rounded-full object-cover mx-auto border-4 ${
-            profile.role === "owner"
-              ? "border-red-500 shadow-red-300"
-              : profile.role === "admin"
-              ? "border-yellow-500 shadow-yellow-300"
-              : "border-gray-300"
-          }`}
-        />
+        {profile.profile_picture ? (
+          <>
+            <img
+              src={profile.profile_picture}
+              alt={profile.username}
+              className={`w-24 h-24 rounded-full object-cover mx-auto border-4 ${
+                profile.role === "owner"
+                  ? "border-red-500 shadow-red-300"
+                  : profile.role === "admin"
+                  ? "border-yellow-500 shadow-yellow-300"
+                  : "border-gray-300"
+              }`}
+            />
+          </>
+        ) : (
+          <>
+            <img
+              src={profileIcon}
+              alt={profile.username}
+              className={`w-24 h-24 rounded-full object-cover mx-auto border-4 ${
+                profile.role === "owner"
+                  ? "border-red-500 shadow-red-300"
+                  : profile.role === "admin"
+                  ? "border-yellow-500 shadow-yellow-300"
+                  : "border-gray-300"
+              }`}
+            />
+          </>
+        )}
         <h2 className="text-xl font-semibold text-gray-700 mt-3">{profile.username}</h2>
         <p className="text-sm text-gray-500">Joined: {profile.join_date}</p>
         <span
