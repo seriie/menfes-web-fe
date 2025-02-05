@@ -34,7 +34,7 @@ const Navbar = () => {
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    location.reload();
+    navigate('/login')
   };
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Navbar = () => {
         <li>
           <Link to="/" className="">
             <h1 onClick={() => setTimeout(() => {
-              location.reload()
+              navigate(0)
             }, 100)} className="text-2xl font-bold text-pink-300">Menfes</h1>
           </Link>
         </li>
