@@ -19,7 +19,6 @@ const Navbar = () => {
       });
       const data = await response.json();
       setProfile(data);
-      console.log(data)
 
       if (response.status == 403) {
         setIsLoggedIn(false);

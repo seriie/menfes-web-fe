@@ -12,6 +12,7 @@ export default function Home() {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [selectedMessage, setSelectedMessage] = useState(null);
+    const [isLiked, setIsLiked] = useState({});
     const { isLoggedIn } = useContext(LoggedinCtx);
     const { isAdmin } = useContext(IsAdminCtx);
     const navigate = useNavigate();
@@ -30,6 +31,14 @@ export default function Home() {
     useEffect(() => {
         getMenfes();
     }, []);
+    
+    useEffect(() => {
+        if (isLoggedIn && menfes.length > 0) {
+            menfes.forEach((item) => {
+                handleCheckLikes(item.id);
+            });
+        }
+    }, [menfes, isLoggedIn]);    
 
     const toggleDropdown = (index) => {
         setSelectedMessage(selectedMessage === index ? null : index);
@@ -51,10 +60,43 @@ export default function Home() {
 
     const handlePinMessage = async (id) => {
         try {
-            await axios.patch(`${URL}menfes/${id}/pin`);
+            await axios.patch(`${URL}menfes/${id}/pin`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
             getMenfes();
         } catch (error) {
             console.error("Pin error:", error.response?.data || error.message);
+        }
+    };
+
+    const handleLikeMenfes = async (id) => {
+        try {
+            await axios.post(`${URL}menfes/likes`, {
+                menfes_id: id
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            setIsLiked(prev => ({ ...prev, [id]: !prev[id] }));
+            getMenfes();
+        } catch (e) {
+            console.error("Like error:", e.response?.data || e.message);
+        }
+    };    
+
+    const handleCheckLikes = async (id) => {
+        try {
+            const response = await axios.get(`${URL}menfes/${id}/liked`, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+            setIsLiked(prev => ({ ...prev, [id]: response.data.liked }));
+        } catch (e) {
+            console.error("Check likes error:", e.response?.data || e.message);
         }
     };    
 
@@ -116,9 +158,9 @@ export default function Home() {
                                         </span>
 
                                         {selectedMessage === index && (
-                                            <div className="absolute z-10 right-3 top-14 bg-white border shadow-md rounded-md p-1">
+                                            <div onClick={() => setSelectedMessage(!selectedMessage)} className="absolute z-10 right-3 top-14 bg-white border shadow-md rounded-md p-1">
                                                 {isAdmin ? (
-                                                    <div onClick={() => setSelectedMessage(!selectedMessage)}>
+                                                    <div>
                                                         <div onClick={() => handleDeleteMessage(item.id)} className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
                                                             <button className="text-red-500 block">Delete</button>
                                                             <i className="fas fa-trash text-red-500"></i>
@@ -135,6 +177,13 @@ export default function Home() {
                                                 ) : (
                                                     <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
                                                 )}
+                                                <div onClick={() => handleLikeMenfes(item.id)} className="flex cursor-pointer gap-1 items-center w-full text-left p-2 hover:bg-gray-100">
+                                                    <button className="flex items-center gap-2 text-gray-600">
+                                                        <p>Likes</p>
+                                                        <i className={`fa-solid fa-heart ${isLiked[item.id] ? 'text-red-500' : ''}`}></i>
+                                                    </button>
+                                                    <span className="text-gray-600">{item.total_likes}</span>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
