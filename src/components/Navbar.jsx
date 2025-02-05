@@ -1,4 +1,4 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { LoggedinCtx } from "../App";
 import profileIcon from "../assets/image/profile_icon.png";
@@ -8,6 +8,7 @@ const Navbar = () => {
   const [profile, setProfile] = useState({});
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   const URL = `${import.meta.env.VITE_BACKEND_URL}profile/`;
 
   const handleFetchProfile = async () => {

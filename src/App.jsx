@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from "react";
-import { BrowserRouter as Router, Route, Routes, Meta } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 import Navbar from "./components/Navbar";
 import Login from "./components/Auth/login/Login";
 import Register from "./components/Auth/register/Register";
@@ -8,31 +8,19 @@ import PageNotFound from "./components/PageNotFound";
 import Home from "./components/Home";
 import CreateMenfes from "./components/CreateMenfes";
 import Inbox from "./components/Inbox";
+import Profiles from "./components/Profiles";
 import axios from "axios";
-const URL = import.meta.env.VITE_BACKEND_URL;
 
-export const LoggedinCtx = createContext();
-export const IsAdminCtx = createContext();
+const URL = import.meta.env.VITE_BACKEND_URL;
+const API_KEY = import.meta.env.VITE_MENFES_API_KEY;
+
+const LoggedinCtx = createContext();
+const IsAdminCtx = createContext();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
-
-  const fetchUrl = async () => {
-    try {
-      const response = await axios.get(`${URL}profile`, {
-        headers : {
-          Authorization: `Bearer ${localStorage.getItem('token')}`,
-        }
-      });
-      
-      setRole(response.data.role);
-      
-    } catch (e) {
-      console.error(e.response);
-    }
-  }
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -40,24 +28,37 @@ const App = () => {
       setIsLoggedIn(true);
       fetchUrl();
     }
-    role === 'admin' || role === 'owner' ? setIsAdmin(true) : setIsAdmin(false);
-  }, [isAdmin, role]);
+  }, []);
 
-  const validPaths = ['/', '/login', '/register', '/profile', '/create-menfes', '/inbox'];
+  const fetchUrl = async () => {
+    try {
+      const response = await axios.get(`${URL}profile`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      });
+
+      setRole(response.data.role);
+      setIsAdmin(response.data.role === "admin" || response.data.role === "owner");
+    } catch (e) {
+      console.error(e.response);
+    }
+  };
 
   return (
     <LoggedinCtx.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       <IsAdminCtx.Provider value={{ isAdmin, setIsAdmin }}>
         <Router basename="/">
-          {validPaths.includes(location.pathname) && <Navbar />}
-          {!validPaths.includes(location.pathname) && <PageNotFound />}
-            <Routes>
+          <Navbar />
+          <Routes>
             <Route path="/" element={<Home />} />
+            <Route path="/profiles/:username" element={<Profiles />} />
             <Route path="/login" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/create-menfes" element={<CreateMenfes />} />
             <Route path="/inbox" element={<Inbox />} />
+            {/* <Route path="*" element={<PageNotFound />} /> */}
           </Routes>
         </Router>
       </IsAdminCtx.Provider>
@@ -65,4 +66,5 @@ const App = () => {
   );
 };
 
+export { LoggedinCtx, IsAdminCtx };
 export default App;

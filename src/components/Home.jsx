@@ -98,7 +98,11 @@ export default function Home() {
         } catch (e) {
             console.error("Check likes error:", e.response?.data || e.message);
         }
-    };    
+    };
+    
+    const handleProfileClick = (username) => {
+        navigate(`/profiles/${username}`);
+    };
 
     const displayedMessages = [...menfes].sort((a, b) => b.pinned - a.pinned);
 
@@ -134,14 +138,14 @@ export default function Home() {
                                         {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
                                         <div className="flex space-x-4">
                                             <img
-                                                src={item.profile_picture ? item.profile_picture : profileIcon}
+                                                src={item.profile_picture ? URL + item.profile_picture : profileIcon}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                             />
                                             
                                             <div>
                                                 <div className="flex gap-1 items-center">
-                                                    <h3 className="text-pink-700 text-xs sm:text-sm md:text-base font-semibold">{item.username} |</h3>
+                                                    <h3 onClick={() => handleProfileClick(item.username)} className="text-pink-700 hover:underline cursor-pointer text-xs sm:text-sm md:text-base font-semibold">{item.username} |</h3>
                                                     <div className="flex items-center gap-1">
                                                         <span className={`text-xs sm:text-sm md:text-base ${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
                                                         {item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : ''}
