@@ -150,12 +150,20 @@ export default function Home() {
                                                 <p className="text-gray-800 text-sm md:text-base break-all">{item.message}</p>
                                             </div>
                                         </div>
-                                        <span 
-                                            className="text-xl cursor-pointer"
-                                            onClick={() => toggleDropdown(index)}
-                                        >
-                                            &#9868;
-                                        </span>
+                                        <div className="flex items-center">
+                                            <div onClick={() => handleLikeMenfes(item.id)} className="flex cursor-pointer gap-1 items-center w-full text-left p-2 hover:bg-gray-100">
+                                                <button className="flex items-center gap-2 text-gray-600">
+                                                    <i className={`fa-solid fa-heart ${isLiked[item.id] ? 'text-red-500' : ''}`}></i>
+                                                </button>
+                                                <span className="text-gray-600">{item.total_likes}</span>
+                                            </div>
+                                            <span 
+                                                className="text-xl cursor-pointer"
+                                                onClick={() => toggleDropdown(index)}
+                                            >
+                                                &#9868;
+                                            </span>
+                                        </div>
 
                                         {selectedMessage === index && (
                                             <div onClick={() => setSelectedMessage(!selectedMessage)} className="absolute z-10 right-3 top-14 bg-white border shadow-md rounded-md p-1">
