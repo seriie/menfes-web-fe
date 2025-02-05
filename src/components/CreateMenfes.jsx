@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import './css/create_menfes.css'
 
 const CreateMenfes = () => {
   const [message, setMessage] = useState('');
   const [visibility, setVisibility] = useState('public');
+  const [identity, setIdentity] = useState(0);
   const [targetUsername, setTargetUsername] = useState('');
   const [alert, setAlert] = useState("");
   const [success, setSuccess] = useState(false);
@@ -23,6 +25,7 @@ const CreateMenfes = () => {
           message,
           visibility,
           targetUsername: visibility === 'private' ? targetUsername : null,
+          anonymous: identity
         }),
       });
 
@@ -76,6 +79,20 @@ const CreateMenfes = () => {
           <option value="public">Public</option>
           <option value="private">Private</option>
         </select>
+      </div>
+      <div className="mb-4">
+        <label className="identity-label text-sm font-medium text-pink-700 mb-2 flex items-center gap-2 sm:gap-3 flex-wrap">
+          <input
+            type="checkbox"
+            checked={identity === 1}
+            onChange={() => setIdentity(identity === 1 ? 0 : 1)}
+            className="identity-checkbox accent-pink-500 w-6 h-6 sm:w-7 sm:h-7"
+          />
+          Post as Anonymous 
+          <span className="text-gray-400 font-normal">
+            Your username will be displayed as <span className="text-red-500">'Anonymous'</span>.
+          </span>
+        </label>
       </div>
       {visibility === 'private' && (
         <div className="mb-4">

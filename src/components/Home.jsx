@@ -3,6 +3,7 @@ import { useContext, useEffect, useState } from "react";
 import { IsAdminCtx, LoggedinCtx } from "../App";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/image/profile_icon.png";
+import anonymousProfileIcon from "../assets/image/anonymous_profile_icon.png"
 import adminRoleIcon from '../assets/icon/admin_role_icon.png';
 import ownerRoleIcon from '../assets/icon/owner_role_icon.png';
 import '../App.css';
@@ -23,6 +24,7 @@ export default function Home() {
             const response = await axios.get(`${URL}menfes/public`);
             setMenfes(response.data);
             setLoading(false);
+            console.log(response)
         } catch (e) {
             setError(e.response?.data || "Error fetching data");
         }
@@ -138,17 +140,24 @@ export default function Home() {
                                         {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
                                         <div className="flex space-x-4">
                                             <img
-                                                src={item.profile_picture ? item.profile_picture : profileIcon}
+                                                src={item.anonymous == 1 ? anonymousProfileIcon : item.profile_picture ? item.profile_picture : profileIcon}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                             />
                                             
                                             <div>
                                                 <div className="flex gap-1 items-center">
-                                                    <h3 onClick={() => handleProfileClick(item.username)} className="text-pink-700 hover:underline cursor-pointer text-xs sm:text-sm md:text-base font-semibold">{item.username} |</h3>
+                                                    <h3 
+                                                        onClick={() => {
+                                                            if (item.anonymous == 1 && !isAdmin) return;
+                                                            handleProfileClick(item.username);
+                                                        }}  
+                                                        className={`${item.anonymous == 1 ? 'text-slate-700' : 'text-pink-700'} hover:underline cursor-pointer text-xs sm:text-sm md:text-base font-semibold`}>
+                                                        {item.anonymous == 1 ? 'Anonymous' : item.username + ' |'}
+                                                    </h3>
                                                     <div className="flex items-center gap-1">
-                                                        <span className={`text-xs sm:text-sm md:text-base ${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.role}</span>
-                                                        {item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : ''}
+                                                        <span className={`text-xs sm:text-sm md:text-base ${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.anonymous == 1 ? '' : item.role}</span>
+                                                        {item.anonymous == 1 ? '' : (item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : '')}
                                                     </div>
                                                     <i className="text-slate-400 text-xs sm:text-sm md:text-base">| {new Date(item.created_at).toLocaleString("id-ID", {dateStyle: "short", timeStyle: "short"})}</i>
                                                 </div>
@@ -190,13 +199,6 @@ export default function Home() {
                                                 ) : (
                                                     <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
                                                 )}
-                                                <div onClick={() => handleLikeMenfes(item.id)} className="flex cursor-pointer gap-1 items-center w-full text-left p-2 hover:bg-gray-100">
-                                                    <button className="flex items-center gap-2 text-gray-600">
-                                                        <p>Likes</p>
-                                                        <i className={`fa-solid fa-heart ${isLiked[item.id] ? 'text-red-500' : ''}`}></i>
-                                                    </button>
-                                                    <span className="text-gray-600">{item.total_likes}</span>
-                                                </div>
                                             </div>
                                         )}
                                     </div>

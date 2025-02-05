@@ -1,0 +1,39 @@
+.identity-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.identity-checkbox {
+    appearance: none;
+    width: 30px;
+    height: 30px;
+    position: relative;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.identity-checkbox::before {
+    content: '';
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: 2px solid #EC4899;
+    box-shadow: 0 0 5px 1px #EC4899;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    transition: 0.2s;
+}
+
+.identity-checkbox:checked::before {
+    content: '\2713';
+    background-color: #EC4899;
+    color: #ffffff; 
+    font-size: 20px;
+    font-weight: bold;
+}
