@@ -94,7 +94,7 @@ export default function Profile() {
 
         {/* Profile Picture */}
         <img
-          src={profile.profile_picture ? `${URL}${profile.profile_picture}` : profileIcon}
+          src={profile.profile_picture ? `${profile.profile_picture}` : profileIcon}
           alt={profile.username}
           className={`w-24 h-24 rounded-full object-cover mx-auto border-4 ${
             profile.role === "owner" ? "border-red-500 shadow-red-300" :
