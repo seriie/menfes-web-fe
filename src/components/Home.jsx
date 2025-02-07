@@ -127,6 +127,7 @@ export default function Home() {
 
             setMessage(response.data.message);
             setSuccess(true);
+            setReplyMessage('')
             console.log(response)
         } catch (e) {
             console.error("Reply message error:", e.response?.data || e.message);
@@ -288,7 +289,7 @@ export default function Home() {
                                                 </>
                                             ))}
                                             <div className="flex items-center">
-                                                <input onChange={(e) => setReplyMessage(e.target.value)} type="text" placeholder="Reply..." className=" bg-slate-300 text-slate-800 rounded-tl-full rounded-bl-full w-full p-2 focus:outline-none placeholder:text-slate-60"></input>
+                                                <input value={replyMessage} onChange={(e) => setReplyMessage(e.target.value)} type="text" placeholder="Reply..." className=" reply-input bg-slate-300 text-slate-800 rounded-tl-full rounded-bl-full w-full p-2 focus:outline-none placeholder:text-slate-60"></input>
                                                 <button onClick={() => handleReplyMessage(item.id)} type="submit" className="p-2 bg-pink-500 rounded-br-full font-medium rounded-tr-full text-slate-100">Reply</button>
                                             </div>
                                             {message && (
