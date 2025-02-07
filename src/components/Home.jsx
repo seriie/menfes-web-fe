@@ -1,6 +1,6 @@
 import axios from "axios";
-import { useContext, useEffect, useState } from "react";
-import { IsAdminCtx, LoggedinCtx } from "../App";
+import { useContext, useEffect, useState, useCallback } from "react";
+import { IsAdminCtx, IsOwnerCtx, LoggedinCtx } from "../App";
 import { useNavigate } from "react-router-dom";
 import profileIcon from "../assets/image/profile_icon.png";
 import anonymousProfileIcon from "../assets/image/anonymous_profile_icon.png"
@@ -14,36 +14,45 @@ export default function Home() {
     const [error, setError] = useState("");
     const [selectedMessage, setSelectedMessage] = useState(null);
     const [isLiked, setIsLiked] = useState({});
+    const [reply, setReply] = useState(null);
+    const [replyMessage, setReplyMessage] = useState('');
+    const [comments, setComments] = useState([]);
+    const [message, setMessage] = useState('');
+    const [success, setSuccess] = useState(false);
     const { isLoggedIn } = useContext(LoggedinCtx);
     const { isAdmin } = useContext(IsAdminCtx);
+    const { isOwner } = useContext(IsOwnerCtx);
     const navigate = useNavigate();
     const URL = import.meta.env.VITE_BACKEND_URL;
+    const API_KEY = import.meta.env.VITE_MENFES_API_KEY;
 
-    const getMenfes = async () => {
+    const getMenfes = useCallback(async () => {
         try {
             const response = await axios.get(`${URL}menfes/public`);
             setMenfes(response.data);
             setLoading(false);
-            console.log(response)
         } catch (e) {
             setError(e.response?.data || "Error fetching data");
         }
-    };    
+    }, []);
 
     useEffect(() => {
         getMenfes();
-    }, []);
+    }, [getMenfes]);
     
     useEffect(() => {
         if (isLoggedIn && menfes.length > 0) {
-            menfes.forEach((item) => {
-                handleCheckLikes(item.id);
-            });
+            Promise.all(menfes.map(item => handleCheckLikes(item.id)));
         }
-    }, [menfes, isLoggedIn]);    
+    }, [menfes, isLoggedIn]);      
 
     const toggleDropdown = (index) => {
         setSelectedMessage(selectedMessage === index ? null : index);
+    };
+
+    const toggleReply = (index, id) => {
+        setReply(reply === index ? null : index);
+        getReplyMessage(id);
     };
 
     const handleDeleteMessage = async (id) => {
@@ -91,16 +100,56 @@ export default function Home() {
 
     const handleCheckLikes = async (id) => {
         try {
-            const response = await axios.get(`${URL}menfes/${id}/liked`, {
+            const { data } = await axios.get(`${URL}menfes/${id}/liked`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
                 }
             });
-            setIsLiked(prev => ({ ...prev, [id]: response.data.liked }));
+    
+            setIsLiked(prev => {
+                if (prev[id] === data.liked) return prev;
+                return { ...prev, [id]: data.liked };
+            });
         } catch (e) {
             console.error("Check likes error:", e.response?.data || e.message);
         }
-    };
+    };    
+
+    const handleReplyMessage = async (id) => {
+        try {
+            const response = await axios.post(`${URL}menfes/reply/${id}`, {
+                reply_message: replyMessage
+            }, {
+                headers: {
+                    'Authorization' : `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            setMessage(response.data.message);
+            setSuccess(true);
+            console.log(response)
+        } catch (e) {
+            console.error("Reply message error:", e.response?.data || e.message);
+            setMessage(e.response?.data.message);
+            console.log(e)
+            setSuccess(false);
+        }
+    }
+
+    const getReplyMessage = async (id) => {
+        try {
+            const response = await axios.get(`${URL}menfes/reply/${id}?KEY=${API_KEY}`, {
+                headers : {
+                    'Authorization' : `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            setComments(response.data);
+            console.log(response);
+        } catch (e) {
+            console.error("Error get reply message", e)
+        }
+    }
     
     const handleProfileClick = (username) => {
         navigate(`/profiles/${username}`);
@@ -131,16 +180,17 @@ export default function Home() {
                         ) : (
                             <div className="space-y-4">
                                 {displayedMessages.map((item, index) => (
+                                    <>
                                     <div
-                                        key={index}
+                                        key={item.id}
                                         onDoubleClick={() => handleLikeMenfes(item.id)}
-                                        className={`bg-white p-4 relative shadow-md items-center rounded-lg flex justify-between space-x-4 hover:shadow-lg 
-                                        ${item.pinned == 1 ? 'border-2 bg-gradient-to-r from-white to-yellow-200 border-yellow-500' : ''}`}
+                                        className={`${item.role == 'owner' && !item.anonymous == 1 ? 'bg-gradient-to-r from-slate-50 to-red-300 border-2 border-red-500' : 'bg-white'} p-4 relative shadow-md items-center rounded-lg flex justify-between space-x-4 hover:shadow-lg 
+                                        ${item.pinned == 1 ? 'border-2 bg-gradient-to-r from-white to-pink-200 border-pink-500' : ''}`}
                                     >
                                         {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
                                         <div className="flex space-x-4">
                                             <img
-                                                src={item.anonymous == 1 ? anonymousProfileIcon : item.profile_picture ? item.profile_picture : profileIcon}
+                                                src={item.anonymous == 1 ? anonymousProfileIcon :    item.profile_picture ? item.profile_picture : profileIcon}
                                                 alt="Profile"
                                                 className="w-10 h-10 object-cover rounded-full border border-pink-300"
                                             />
@@ -149,7 +199,7 @@ export default function Home() {
                                                 <div className="flex gap-1 items-center">
                                                     <h3 
                                                         onClick={() => {
-                                                            if (item.anonymous == 1 && !isAdmin) return;
+                                                            if (item.anonymous == 1 && !isOwner) return;
                                                             handleProfileClick(item.username);
                                                         }}  
                                                         className={`${item.anonymous == 1 ? 'text-slate-700' : 'text-pink-700'} hover:underline cursor-pointer text-xs sm:text-sm md:text-base font-semibold`}>
@@ -159,7 +209,7 @@ export default function Home() {
                                                         <span className={`text-xs sm:text-sm md:text-base ${item.role === 'owner' ? 'text-red-500' : item.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{item.anonymous == 1 ? '' : item.role}</span>
                                                         {item.anonymous == 1 ? '' : (item.role === 'owner' ? <img className="w-4" src={ownerRoleIcon} /> : item.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : '')}
                                                     </div>
-                                                    <i className="text-slate-400 text-xs sm:text-sm md:text-base">| {new Date(item.created_at).toLocaleString("id-ID", {dateStyle: "short", timeStyle: "short"})}</i>
+                                                    <i className="text-slate-400 text-xs sm:text-sm md:text-base">| {item.created_at}</i>
                                                 </div>
                                                 <p className="text-gray-800 text-sm md:text-base break-all">{item.message}</p>
                                             </div>
@@ -181,7 +231,7 @@ export default function Home() {
 
                                         {selectedMessage === index && (
                                             <div onClick={() => setSelectedMessage(!selectedMessage)} className="absolute z-10 right-3 top-14 bg-white border shadow-md rounded-md p-1">
-                                                {isAdmin ? (
+                                                {isAdmin || isOwner ? (
                                                     <div>
                                                         <div onClick={() => handleDeleteMessage(item.id)} className="flex cursor-pointer gap-3 items-center w-full text-left p-2 hover:bg-gray-100">
                                                             <button className="text-red-500 block">Delete</button>
@@ -197,11 +247,62 @@ export default function Home() {
 
                                                     </div>
                                                 ) : (
-                                                    <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
+                                                    <>
+                                                        <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
+                                                    </>
                                                 )}
+                                                <button className="block w-full text-left p-2 hover:bg-gray-100">Reply</button>
                                             </div>
                                         )}
                                     </div>
+                                    {reply == index && (
+                                        <>
+                                            <p className="text-center w-full border-b-2 border-slate-400 text-slate-600 font-medium text-xl">{comments.length > 0 ? `(${comments.length})` : 'No'} Replies</p>
+                                            {comments.map((comment, idx) => (
+                                                <>
+                                                    <div className="space-y-2">
+                                                        <div key={comment.id} className="bg-white p-2 relative shadow-md items-center rounded-lg flex justify-between space-x-2 hover:shadow-lg">
+                                                            <div className="flex space-x-2">
+                                                                <img src={comment.profile_picture} alt={`${comment.username} profile`} className="w-8 h-8 object-cover rounded-full border border-pink-300" />
+                                                                <div>
+                                                                    <div className="flex gap-1 items-center">
+                                                                        <h3 
+                                                                            onClick={() => {
+                                                                                if (!isOwner) return;
+                                                                                handleProfileClick(comment.username);
+                                                                            }}  
+                                                                            className={`text-pink-700 hover:underline cursor-pointer text-sm font-semibold`}>
+                                                                            {comment.username} |
+                                                                        </h3>
+                                                                        <div className="flex items-center gap-1">
+                                                                            <span className={`text-sm ${comment.role === 'owner' ? 'text-red-500' : comment.role === 'admin' ? 'text-yellow-500' : 'text-slate-400'} font-normal italic`}>{comment.role}</span>
+                                                                            {comment.role === 'owner' ? <img className="w-3" src={ownerRoleIcon} /> : comment.role === 'admin' ? <img className="w-3" src={adminRoleIcon} /> : ''}
+                                                                        </div>
+                                                                        <i className="text-slate-400 text-sm">| {comment.created_at}</i>
+                                                                    </div>
+                                                                    <p className="text-gray-800 text-sm break-all">{comment.reply_message}</p>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </>
+                                            ))}
+                                            <div className="flex items-center">
+                                                <input onChange={(e) => setReplyMessage(e.target.value)} type="text" placeholder="Reply..." className=" bg-slate-300 text-slate-800 rounded-tl-full rounded-bl-full w-full p-2 focus:outline-none placeholder:text-slate-60"></input>
+                                                <button onClick={() => handleReplyMessage(item.id)} type="submit" className="p-2 bg-pink-500 rounded-br-full font-medium rounded-tr-full text-slate-100">Reply</button>
+                                            </div>
+                                            {message && (
+                                                <p className={`${success ? 'text-green-500' : 'text-red-500'}`}>{message}</p>
+                                            )}
+                                        </>
+                                    )}
+                                   <div onClick={() => toggleReply(index, item.id)}>
+                                        <p className="text-gray-500 cursor-pointer inline-block items-center">
+                                            {reply === index ? "Hide Reply" : "Show Reply"}
+                                        </p>
+                                    </div>
+
+                                </>
                                 ))}
                             </div>
                         )}

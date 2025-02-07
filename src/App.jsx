@@ -16,11 +16,13 @@ const API_KEY = import.meta.env.VITE_MENFES_API_KEY;
 
 const LoggedinCtx = createContext();
 const IsAdminCtx = createContext();
+const IsOwnerCtx = createContext();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [role, setRole] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isOwner, setIsOwner] = useState(false);
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -28,6 +30,7 @@ const App = () => {
       setIsLoggedIn(true);
       fetchUrl();
     }
+    console.log(isAdmin)
   }, []);
 
   const fetchUrl = async () => {
@@ -39,7 +42,8 @@ const App = () => {
       });
 
       setRole(response.data.role);
-      setIsAdmin(response.data.role === "admin" || response.data.role === "owner");
+      setIsAdmin(response.data.role === "admin");
+      setIsOwner(response.data.role === "owner");
     } catch (e) {
       console.error(e.response);
     }
@@ -47,24 +51,26 @@ const App = () => {
 
   return (
     <LoggedinCtx.Provider value={{ isLoggedIn, setIsLoggedIn }}>
-      <IsAdminCtx.Provider value={{ isAdmin, setIsAdmin }}>
-        <Router basename="/">
-          <Navbar />
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/profiles/:username" element={<Profiles />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path="/create-menfes" element={<CreateMenfes />} />
-            <Route path="/inbox" element={<Inbox />} />
-            {/* <Route path="*" element={<PageNotFound />} /> */}
-          </Routes>
-        </Router>
-      </IsAdminCtx.Provider>
+      <IsOwnerCtx.Provider value={{ isOwner, setIsOwner }}>
+        <IsAdminCtx.Provider value={{ isAdmin, setIsAdmin }}>
+          <Router basename="/">
+            <Navbar />
+            <Routes>
+              <Route path="/" element={<Home />} />
+              <Route path="/profiles/:username" element={<Profiles />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/profile" element={<ProfilePage />} />
+              <Route path="/create-menfes" element={<CreateMenfes />} />
+              <Route path="/inbox" element={<Inbox />} />
+              {/* <Route path="*" element={<PageNotFound />} /> */}
+            </Routes>
+          </Router>
+        </IsAdminCtx.Provider>
+      </IsOwnerCtx.Provider>
     </LoggedinCtx.Provider>
   );
 };
 
-export { LoggedinCtx, IsAdminCtx };
+export { LoggedinCtx, IsAdminCtx, IsOwnerCtx };
 export default App;
