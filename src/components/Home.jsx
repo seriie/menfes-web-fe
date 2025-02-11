@@ -19,6 +19,7 @@ export default function Home() {
     const [comments, setComments] = useState([]);
     const [message, setMessage] = useState('');
     const [success, setSuccess] = useState(false);
+    const [replyLoading, setReplyLoading] = useState(false);
     const { isLoggedIn } = useContext(LoggedinCtx);
     const { isAdmin } = useContext(IsAdminCtx);
     const { isOwner } = useContext(IsOwnerCtx);
@@ -138,13 +139,15 @@ export default function Home() {
     }
 
     const getReplyMessage = async (id) => {
+        setReplyLoading(true);
         try {
             const response = await axios.get(`${URL}menfes/reply/${id}?KEY=${API_KEY}`, {
                 headers : {
                     'Authorization' : `Bearer ${localStorage.getItem('token')}`
                 }
             });
-
+            
+            setReplyLoading(false);
             setComments(response.data);
             console.log(response);
         } catch (e) {
@@ -259,9 +262,15 @@ export default function Home() {
                                     {reply == index && (
                                         <>
                                             <p className="text-center w-full border-b-2 border-slate-400 text-slate-600 font-medium text-xl">{comments.length > 0 ? `(${comments.length})` : 'No'} Replies</p>
+                                            {replyLoading && (
+                                                <>
+                                                    <p className="text-gray-500 text-center font-medium text-lg">Loading...</p>
+                                                </>
+                                            )}
                                             {comments.map((comment, idx) => (
                                                 <>
                                                     <div className="space-y-2">
+                                                        <p className="text-gray-500 text-center font-medium text-lg">Loading...</p>
                                                         <div key={comment.id} className="bg-white p-2 relative shadow-md items-center rounded-lg flex justify-between space-x-2 hover:shadow-lg">
                                                             <div className="flex space-x-2">
                                                                 <img src={comment.profile_picture} alt={`${comment.username} profile`} className="w-8 h-8 object-cover rounded-full border border-pink-300" />
