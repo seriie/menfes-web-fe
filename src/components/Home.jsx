@@ -185,8 +185,8 @@ export default function Home() {
                                     <div
                                         key={item.id}
                                         onDoubleClick={() => handleLikeMenfes(item.id)}
-                                        className={`${item.role == 'owner' && !item.anonymous == 1 ? 'bg-gradient-to-r from-slate-50 to-red-300 border-2 border-red-500' : 'bg-white'} p-4 relative shadow-md items-center rounded-lg flex justify-between space-x-4 hover:shadow-lg 
-                                        ${item.pinned == 1 ? 'border-2 bg-gradient-to-r from-white to-pink-200 border-pink-500' : ''}`}
+                                        className={`${item.role == 'owner' && !item.anonymous == 1 ? 'bg-gradient-to-r from-slate-50 to-red-300 border-2 border-red-500' : 'bg-white'} ${item.role == 'admin' && !item.anonymous == 1 ? 'bg-gradient-to-r from-slate-50 to-yellow-300 border-2 border-yellow-500' : ''} p-4 relative shadow-md items-center rounded-lg flex justify-between space-x-4 hover:shadow-lg 
+                                        ${item.pinned == 1 && item.anonymous == 1 ? 'border-2 bg-gradient-to-r from-white to-slate-500 border-slate-500' : item.pinned == 1 && !item.anonymous == 1 && 'border-2 bg-gradient-to-r from-white to-pink-200 border-pink-500'}`}
                                     >
                                         {item.pinned == 1 && <i className='fa-solid fa-thumbtack text-slate-500 absolute top-1 left-1'></i>}
                                         <div className="flex space-x-4">
