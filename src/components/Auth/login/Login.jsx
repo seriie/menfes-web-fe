@@ -6,6 +6,7 @@ import { LoggedinCtx } from '../../../App';
 const Login = () => {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
+  const [isLogginIn, setIsLogginIn] = useState(false);
   const navigate = useNavigate();
   const { setIsLoggedIn } = useContext(LoggedinCtx);
   const URL = import.meta.env.VITE_BACKEND_URL;
@@ -16,6 +17,7 @@ const Login = () => {
   };
 
   const handleSubmit = (e) => {
+    setIsLogginIn(true);
     e.preventDefault();
     const emailField = document.querySelector('input[type="email"]');
     const passwordField = document.querySelector('input[type="password"]');
@@ -27,7 +29,8 @@ const Login = () => {
       .then(response => {
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('userId', response.data.userId);
-        setIsLoggedIn(true);
+        setIsLogginIn(false);
+        setIsLoggedIn(false);
         navigate('/');
         location.reload();
       })
@@ -70,9 +73,9 @@ const Login = () => {
             }
             <button 
               type="submit" 
-              className="w-full bg-pink-500 text-white p-2 rounded hover:bg-pink-600 transition-all"
+              className={`w-full ${isLogginIn ? 'bg-pink-400' : 'bg-pink-500'} text-white p-2 rounded hover:bg-pink-600 transition-all`}
             >
-              Login
+              {isLogginIn ? 'Logging in...' : 'Login'}
             </button>
             <p className='mt-5 text-pink-600'>Not a member yet?
               <span className='font-bold text-pink-700'>
