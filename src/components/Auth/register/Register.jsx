@@ -5,6 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 const Register = () => {
   const [form, setForm] = useState({ fullname: '', username: '', email: '', password: '', birthday: '' });
   const [error, setError] = useState('');
+  const [isRegistering, setIsRegistering] = useState(false);
   const navigate = useNavigate();
   const URL = import.meta.env.VITE_BACKEND_URL;
 
@@ -14,11 +15,13 @@ const Register = () => {
   };
 
   const handleSubmit = (e) => {
+    setIsRegistering(true);
     e.preventDefault();
     axios
       .post(`${URL}auth/register`, form)
       .then(() => {
         navigate('/login');
+        setIsRegistering(false);
       })
       .catch((err) => {
         setError(err.response.data.message);
@@ -111,9 +114,9 @@ const Register = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className="w-full p-2 bg-pink-500 focus:outline-pink-400 text-white font-semibold rounded hover:bg-pink-600 transition"
+            className={`w-full p-2 ${isRegistering ? 'bg-pink-400' : 'bg-pink-500'} focus:outline-pink-400 text-white font-semibold rounded hover:bg-pink-600 transition`}
           >
-            Register
+            {isRegistering ? 'Registering...' : 'Register'}
           </button>
 
           {/* Footer Notes */}
