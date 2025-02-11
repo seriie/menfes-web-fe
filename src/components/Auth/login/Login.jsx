@@ -73,7 +73,7 @@ const Login = () => {
             }
             <button 
               type="submit" 
-              className={`w-full ${isLogginIn ? 'bg-pink-400' : 'bg-pink-500'} text-white p-2 rounded hover:bg-pink-600 transition-all`}
+              className={`w-full ${isLogginIn ? 'bg-pink-400' : 'bg-pink-500 hover:bg-pink-600'} text-white p-2 rounded transition-all`}
             >
               {isLogginIn ? 'Logging in...' : 'Login'}
             </button>
