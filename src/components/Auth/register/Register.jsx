@@ -114,7 +114,7 @@ const Register = () => {
           {/* Submit Button */}
           <button
             type="submit"
-            className={`w-full p-2 ${isRegistering ? 'bg-pink-400' : 'bg-pink-500'} focus:outline-pink-400 text-white font-semibold rounded hover:bg-pink-600 transition`}
+            className={`w-full p-2 ${isRegistering ? 'bg-pink-400' : 'bg-pink-500 hover:bg-pink-600'} focus:outline-pink-400 text-white font-semibold rounded transition`}
           >
             {isRegistering ? 'Registering...' : 'Register'}
           </button>
