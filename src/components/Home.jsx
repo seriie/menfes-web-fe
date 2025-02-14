@@ -264,8 +264,8 @@ export default function Home() {
                                     </div>
                                     {reply == index && (
                                         <>
-                                            <p className="text-center w-full border-b-2 border-slate-400 text-slate-600 font-medium text-xl">{comments.length > 0 ? `(${comments.length})` : 'No'} Replies</p>
-                                            {replyLoading ? <p className="text-gray-500 text-center font-medium text-lg">Loading...</p> : ''}
+                                            
+                                            {replyLoading ? <p className="text-gray-500 text-center font-medium text-lg">Loading...</p> : <p className="text-center w-full border-b-2 border-slate-400 text-slate-600 font-medium text-xl">{comments.length > 0 ? `(${comments.length})` : 'No'} Replies</p>}
                                             {comments.map((comment, idx) => (
                                                 <>
                                                     <div className="space-y-2">
