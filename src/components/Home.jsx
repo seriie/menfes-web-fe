@@ -139,8 +139,8 @@ export default function Home() {
     }
 
     const getReplyMessage = async (id) => {
-        setReplyLoading(true);
         try {
+            setReplyLoading(true);
             const response = await axios.get(`${URL}menfes/reply/${id}?KEY=${API_KEY}`, {
                 headers : {
                     'Authorization' : `Bearer ${localStorage.getItem('token')}`
@@ -148,10 +148,13 @@ export default function Home() {
             });
             
             setReplyLoading(false);
-            setComments(response.data);
+            setComments(response.data || []);
             console.log(response);
         } catch (e) {
             console.error("Error get reply message", e)
+            setReplyLoading(false);
+        } finally {
+            setReplyLoading(false);
         }
     }
     
@@ -262,11 +265,7 @@ export default function Home() {
                                     {reply == index && (
                                         <>
                                             <p className="text-center w-full border-b-2 border-slate-400 text-slate-600 font-medium text-xl">{comments.length > 0 ? `(${comments.length})` : 'No'} Replies</p>
-                                            {replyLoading && (
-                                                <>
-                                                    <p className="text-gray-500 text-center font-medium text-lg">Loading...</p>
-                                                </>
-                                            )}
+                                            {replyLoading ? <p className="text-gray-500 text-center font-medium text-lg">Loading...</p> : ''}
                                             {comments.map((comment, idx) => (
                                                 <>
                                                     <div className="space-y-2">
