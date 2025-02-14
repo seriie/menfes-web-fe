@@ -139,20 +139,20 @@ export default function Home() {
     }
 
     const getReplyMessage = async (id) => {
+        setReplyLoading(true);
         try {
-            setReplyLoading(true);
             const response = await axios.get(`${URL}menfes/reply/${id}?KEY=${API_KEY}`, {
                 headers : {
                     'Authorization' : `Bearer ${localStorage.getItem('token')}`
                 }
             });
             
-            setReplyLoading(false);
+            // setReplyLoading(false);
             setComments(response.data || []);
             console.log(response);
         } catch (e) {
             console.error("Error get reply message", e)
-            setReplyLoading(false);
+            // setReplyLoading(false);
         } finally {
             setReplyLoading(false);
         }
@@ -269,7 +269,6 @@ export default function Home() {
                                             {comments.map((comment, idx) => (
                                                 <>
                                                     <div className="space-y-2">
-                                                        <p className="text-gray-500 text-center font-medium text-lg">Loading...</p>
                                                         <div key={comment.id} className="bg-white p-2 relative shadow-md items-center rounded-lg flex justify-between space-x-2 hover:shadow-lg">
                                                             <div className="flex space-x-2">
                                                                 <img src={comment.profile_picture} alt={`${comment.username} profile`} className="w-8 h-8 object-cover rounded-full border border-pink-300" />
