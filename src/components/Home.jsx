@@ -251,14 +251,12 @@ export default function Home() {
                                                             </button>
                                                             <i className={`fa-solid fa-thumbtack ${item.pinned ? 'text-gray-500' : 'text-sky-500'}`}></i>
                                                         </div>
-
                                                     </div>
                                                 ) : (
                                                     <>
                                                         <button className="block w-full text-left p-2 hover:bg-gray-100">Report</button>
                                                     </>
                                                 )}
-                                                <button className="block w-full text-left p-2 hover:bg-gray-100">Reply</button>
                                             </div>
                                         )}
                                     </div>
