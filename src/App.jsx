@@ -1,5 +1,6 @@
 import { createContext, useState, useEffect } from "react";
 import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
+import Admin from "./components/admin/Admin";
 import Navbar from "./components/Navbar";
 import Login from "./components/Auth/login/Login";
 import Register from "./components/Auth/register/Register";
@@ -11,9 +12,6 @@ import Inbox from "./components/Inbox";
 import Profiles from "./components/Profiles";
 import axios from "axios";
 
-const URL = import.meta.env.VITE_BACKEND_URL;
-const API_KEY = import.meta.env.VITE_MENFES_API_KEY;
-
 const LoggedinCtx = createContext();
 const IsAdminCtx = createContext();
 const IsOwnerCtx = createContext();
@@ -23,6 +21,8 @@ const App = () => {
   const [role, setRole] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isOwner, setIsOwner] = useState(false);
+  const URL = import.meta.env.VITE_BACKEND_URL;
+  const API_KEY = import.meta.env.VITE_MENFES_API_KEY;
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -30,7 +30,7 @@ const App = () => {
       setIsLoggedIn(true);
       fetchUrl();
     }
-    console.log(isAdmin)
+    console.log(isAdmin);
   }, []);
 
   const fetchUrl = async () => {
@@ -49,12 +49,25 @@ const App = () => {
     }
   };
 
+  const insertVisitors = async () => {
+    try {
+      const response = await axios.post(`${URL}visitors`);
+      console.log(response);
+    } catch (e) {
+      console.error("Error tracking visitors: ", e);
+    }
+  }
+
+  useEffect(() => {
+    insertVisitors();
+  }, []);
+
   return (
     <LoggedinCtx.Provider value={{ isLoggedIn, setIsLoggedIn }}>
       <IsOwnerCtx.Provider value={{ isOwner, setIsOwner }}>
         <IsAdminCtx.Provider value={{ isAdmin, setIsAdmin }}>
           <Router basename="/">
-            <Navbar />
+            {location.pathname !== "/admin" && <Navbar />}
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/profiles/:username" element={<Profiles />} />
@@ -63,7 +76,8 @@ const App = () => {
               <Route path="/profile" element={<ProfilePage />} />
               <Route path="/create-menfes" element={<CreateMenfes />} />
               <Route path="/inbox" element={<Inbox />} />
-              {/* <Route path="*" element={<PageNotFound />} /> */}
+              <Route path="/admin" element={<Admin />} />
+              <Route path="*" element={<PageNotFound />} />
             </Routes>
           </Router>
         </IsAdminCtx.Provider>

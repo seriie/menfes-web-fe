@@ -17,10 +17,11 @@ export default function Profile() {
   // Fetch profile data
   const getProfile = async () => {
     try {
+      const token = localStorage.getItem('token');
 
       const response = await axios.get(
         `${URL}profiles/${username}?KEY=${import.meta.env.VITE_MENFES_API_KEY}`, {
-          // headers: { Authorization: `Bearer ${token}` }
+          headers: { Authorization: `Bearer ${token}` }
         });
       
       setProfile(response.data);
@@ -72,7 +73,6 @@ export default function Profile() {
     <div className="min-h-screen bg-pink-50 p-8 flex flex-col items-center">
       <h1 className="text-3xl font-bold text-pink-600 mb-6">{profile.username}'s Profile</h1>
       <div className="bg-white p-6 rounded-lg shadow-md border-2 border-pink-200 w-80 text-center">
-        {/* Role Management */}
         {(isAdmin || isOwner) &&
           profile.role !== "owner" &&
           !(isAdmin && profile.role === "admin") && (
@@ -92,7 +92,6 @@ export default function Profile() {
           )
         }
 
-        {/* Profile Picture */}
         <img
           src={profile.profile_picture ? `${profile.profile_picture}` : profileIcon}
           alt={profile.username}
@@ -103,11 +102,9 @@ export default function Profile() {
           }`}
         />
 
-        {/* User Info */}
         <h2 className="text-xl font-semibold text-gray-700 mt-3">{profile.username}</h2>
         <p className="text-sm text-gray-500">Joined: {profile.join_date}</p>
 
-        {/* Role Badge */}
         <span className={`mt-2 px-3 py-1 text-sm font-semibold rounded-full ${
           profile.role === "owner" ? "bg-red-100 text-red-700" :
           profile.role === "admin" ? "bg-yellow-100 text-yellow-700" :
