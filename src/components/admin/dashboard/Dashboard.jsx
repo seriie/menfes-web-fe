@@ -5,9 +5,10 @@ import { useEffect, useState } from "react";
 
 export default function Dashboard() {
     const [totalVisitors, setTotalVisitors] = useState(0);
+    const [todayVisitors, setTodayVisitors] = useState(0);
     const counterItems = [
         { id: 1, name: 'Total Visitors', count: totalVisitors, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-sky-500" },
-        { id: 2, name: 'Visitors Today', count: 4, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-green-500" },
+        { id: 2, name: 'Visitors Today', count: todayVisitors, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-green-500" },
         { id: 3, name: 'Active User', count: 2, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-teal-500" },
         { id: 4, name: 'Active Admin', count: 1, icon: <FaUserTie className="text-white w-10 h-10" />, background: "bg-yellow-500" },
         { id: 5, name: 'Menfes Today', count: 4, icon: <CiViewList className="text-white w-10 h-10" />, background: "bg-pink-500" }
@@ -25,8 +26,26 @@ export default function Dashboard() {
         }
     }
 
+    const getTodayVisitors = async () => {
+        try {
+            const response = await axios.get(`${URL}visitors/today?KEY=${API_KEY}`);
+
+            setTodayVisitors(response.data[0].today);
+        } catch (e) {
+            console.error("Error getting today visitors: ", e);
+        }
+    }
+
     useEffect(() => {
         getTotalVisitors();
+        getTodayVisitors();
+        
+        const interval = setInterval(() => {
+            getTotalVisitors();
+            getTodayVisitors();
+        }, 5000);
+
+        return () => clearInterval(interval);
     }, []);
     
     return (

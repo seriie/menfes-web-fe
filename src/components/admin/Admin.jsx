@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FaUser } from 'react-icons/fa'
 import homeIcon from '../../assets/icon/home_icon.png';
 import Dashboard from "./dashboard/Dashboard";
@@ -11,6 +11,10 @@ export default function Admin() {
         { id: 2, name: "userManagement", label: 'Users', icon: <FaUser className="w-7 h-7" />, isComponent: true },
 
     ];
+
+    useEffect(() => {
+        document.title = `Admin - ${sidebarItems.find((item) => item.name === selectedTab)?.label}`
+    }, [selectedTab]);
 
     return (
         <>
