@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { FaUser, FaUserTie } from "react-icons/fa";
 import { CiViewList } from 'react-icons/ci';
 import axios from "axios";
-import { io } from 'socket.io-client';
 
 export default function Dashboard() {
     const [totalVisitors, setTotalVisitors] = useState(0);
@@ -37,18 +36,7 @@ export default function Dashboard() {
             console.error("Error getting today visitors: ", e);
         }
     }
-
-    useEffect(() => {
-        const socket = io(URL, { transports: ["websocket"] });
-        socket.on("activeUsers", (count) => {
-            setActiveUsers(count);
-        });
-
-        return () => {
-            socket.disconnect();
-        }
-    }, []);
-
+    
     useEffect(() => {
         getTotalVisitors();
         getTodayVisitors();
