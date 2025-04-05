@@ -2,6 +2,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { LoggedinCtx } from "../App";
 import profileIcon from "../assets/image/profile_icon.png";
+import axios from "axios";
 
 const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(LoggedinCtx);
@@ -9,11 +10,11 @@ const Navbar = () => {
   const [isProfileMenuOpen, setIsProfileMenuOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const URL = `${import.meta.env.VITE_BACKEND_URL}profile/`;
+  const URL = import.meta.env.VITE_BACKEND_URL;
 
   const handleFetchProfile = async () => {
     try {
-      const response = await fetch(URL, {
+      const response = await fetch(`${URL}profile`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
@@ -31,10 +32,19 @@ const Navbar = () => {
     }
   };
 
-  const handleLogout = () => {
-    localStorage.removeItem("token");
-    setIsLoggedIn(false);
-    navigate('/login')
+  const handleLogout = async () => {
+    try {
+      await axios.post(`${URL}auth/logout`, {}, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`
+        }
+      });
+      setIsLoggedIn(false);
+      navigate('/login')
+      localStorage.removeItem("token");
+    } catch (e) {
+      console.error("Error logging out: ", e.message);
+    }
   };
 
   useEffect(() => {
