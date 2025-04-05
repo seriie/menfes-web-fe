@@ -7,12 +7,14 @@ export default function Dashboard() {
     const [totalVisitors, setTotalVisitors] = useState(0);
     const [todayVisitors, setTodayVisitors] = useState(0);
     const [activeUsers, setActiveUsers] = useState(0);
+    const [activeAdmin, setActiveAdmin] = useState(0);
+    const [totalMenfesToday, setTotalMenfesToday] = useState(0);
     const counterItems = [
         { id: 1, name: 'Total Visitors', count: totalVisitors, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-sky-500" },
         { id: 2, name: 'Visitors Today', count: todayVisitors, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-green-500" },
         { id: 3, name: 'Active User', count: activeUsers, icon: <FaUser className="text-white w-10 h-10" />, background: "bg-teal-500" },
-        { id: 4, name: 'Active Admin', count: 1, icon: <FaUserTie className="text-white w-10 h-10" />, background: "bg-yellow-500" },
-        { id: 5, name: 'Menfes Today', count: 4, icon: <CiViewList className="text-white w-10 h-10" />, background: "bg-pink-500" }
+        { id: 4, name: 'Active Admin', count: activeAdmin, icon: <FaUserTie className="text-white w-10 h-10" />, background: "bg-yellow-500" },
+        { id: 5, name: 'Menfes Today', count: totalMenfesToday, icon: <CiViewList className="text-white w-10 h-10" />, background: "bg-pink-500" }
     ];
     const URL = import.meta.env.VITE_BACKEND_URL;
     const API_KEY = import.meta.env.VITE_MENFES_API_KEY;
@@ -36,14 +38,50 @@ export default function Dashboard() {
             console.error("Error getting today visitors: ", e);
         }
     }
-    
+
+    const getActiveUsers = async () => {
+        try {
+            const response = await axios.get(`${URL}auth/active-users?KEY=${API_KEY}`);
+
+            setActiveUsers(response.data.length);
+        } catch (e) {
+            console.error("Error getting active users: ", e);
+        }
+    }
+
+    const getActiveAdmin = async () => {
+        try {
+            const response = await axios.get(`${URL}auth/active-admin?KEY=${API_KEY}`);
+
+            setActiveAdmin(response.data.length);
+        } catch (e) {
+            console.error("Error getting active admin: ", e);
+        }
+    }
+
+    const getTotalMenfesToday = async () => {
+        try {
+            const response = await axios.get(`${URL}menfes/total-today?KEY=${API_KEY}`);
+
+            setTotalMenfesToday(response.data[0].today);
+        } catch (e) {
+            console.error("Error getting total menfes today: ", e);
+        }
+    }
+
     useEffect(() => {
         getTotalVisitors();
         getTodayVisitors();
+        getActiveUsers();
+        getActiveAdmin();
+        getTotalMenfesToday();
         
         const interval = setInterval(() => {
             getTotalVisitors();
             getTodayVisitors();
+            getActiveUsers();
+            getActiveAdmin();
+            getTotalMenfesToday();
         }, 5000);
 
         return () => clearInterval(interval);
